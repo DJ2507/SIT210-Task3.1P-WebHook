@@ -1,0 +1,38 @@
+int led = D6;
+int led1 = D7;
+int photosensor = A0;
+int ledToggle(String command);
+int analogvalue;
+
+void setup() {
+    Serial.begin();
+    pinMode(led, OUTPUT);
+    pinMode(led1, OUTPUT);
+    digitalWrite(led, HIGH);
+    Particle.variable("analogvalue", &analogvalue, INT);
+    Particle.function("led",ledToggle);
+
+}
+
+void loop() {
+    analogvalue = analogRead(photosensor);
+    Particle.publish("analogvalue", String(analogvalue), PRIVATE);
+    delay(30000);
+}
+
+int ledToggle(String command) {
+
+    if (command=="on") {
+        digitalWrite(led,HIGH);
+        digitalWrite(led1,HIGH);
+        return 1;
+    }
+    else if (command=="off") {
+        digitalWrite(led,LOW);
+        digitalWrite(led1,LOW);
+        return 0;
+    }
+    else {
+        return -1;
+    }
+}
